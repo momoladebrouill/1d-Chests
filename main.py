@@ -14,7 +14,7 @@ class Pion:
 class Roi(Pion):
     def __init__(self,clan,pos):
         super().__init__(clan,pos)
-        self.repr="\U00002654"
+        self.repr="♔"
         self.moves=[-1,1]
         
 class Tour(Pion):
@@ -56,11 +56,13 @@ for i in range(-3,3):
 pygame.init()
 f=pygame.display.set_mode((taille_echec*100,100))
 fps=pygame.time.Clock()
-font=pygame.font.SysFont('consolas',100)
+font=pygame.font.SysFont('Consolas',100,bold=True)
+#pygame.font.SysFont(
 B=True
 highliters=[]
 couls=[(50,0,0),(10,10,10)]
 selected=False
+player=1
 while B:
     pygame.display.flip()
     fps.tick(60)
@@ -70,7 +72,7 @@ while B:
     for carre in highliters:
         pygame.draw.rect(f,(250,120,0),(carre*100,0,100,100))
     for pion in echequier:
-        mot=font.render(pion.repr,1,(255,255,255) if pion.clan<0 else (255,0,0))
+        mot=font.render(pion.repr,0,(255,255,255) if pion.clan<0 else (255,0,0))
         f.blit(mot,(pion.pos*100,0))
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
@@ -83,13 +85,17 @@ while B:
                     selected.pos=int(event.pos[0]/100)
                     selected=False
                     highliters=[]
+                    player=1 if player==-1 else -1
                 else:
                     selected=False
                     highliters=[]
                     
             else:
                 selected=echequier[int(event.pos[0]/100)]
-                highliters=list(selected.can_goes())
+                if selected.clan!=player:
+                    selected=False
+                else:
+                    highliters=list(selected.can_goes())
             
                 
             

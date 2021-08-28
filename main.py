@@ -7,11 +7,13 @@ class Pion:
     def __init__(self,clan,pos):
         self.clan=clan
         self.pos=pos
-    __repr__=lambda self : f"{self.repr} {self.clan} {self.pos}"
+    
     def can_goes(self):
         for i in self.moves:
             if 0<=self.pos+i<taille_echec:
                 yield self.pos+i
+    
+    __repr__=lambda self : f"{self.repr} {self.clan} {self.pos}"
 
 class Roi(Pion):
     def __init__(self,clan,pos):
@@ -47,7 +49,10 @@ class Vide(Pion):
         self.repr=" "
         self.clan=0
         self.moves=[]
+        
     __repr__=lambda self : " "
+
+    
 def on_click(pos):
     global selected, player,highliters
     if selected:
@@ -62,11 +67,10 @@ def on_click(pos):
                     
     else:
         selected=echequier[pos]
-        if False:#selected.clan!=player:
+        if selected.clan!=player:
                 selected=False
         else:
             highliters=list(selected.can_goes())
-    print(selected)
     return highliters
     
 echequier=[Vide(i) for i in range(taille_echec)]

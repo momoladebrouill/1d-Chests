@@ -6,7 +6,7 @@ f=tk.Tk()
 #l.pack()
 #l["background"]="#ff0000"
 #l.bind('<Button-1>',lambda e: print('grr'))
-labels=[tk.Button(f,text=i.repr,font="Consolas 50 bold",width=2) for i in echequier]
+labels=[tk.Label(f,text=i.repr,font="Consolas 50 bold",width=2) for i in echequier]
 
 for place,label in enumerate(labels):
     label.grid(column=place,row=0)

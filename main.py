@@ -1,4 +1,4 @@
-import random,math,pygame
+import random,math
 taille_echec=8
 selected=False
 player=1

@@ -3,7 +3,7 @@ from random import random
 from colorsys import hsv_to_rgb
 from functools import partial
 from main import *
-hsv=lambda  h,s: "#{0:02x}{1:02x}{2:02x}".format(*[int(c) for c in hsv_to_rgb(h,s,150)])
+hsv=lambda  h,s: "#%02x%02x%02x" % tuple(int(c) for c in hsv_to_rgb(h,s,150))
 maincoul=random()
 def colorize(to_blick=[]):
     for ind,but in enumerate(buttons):
@@ -12,8 +12,10 @@ def colorize(to_blick=[]):
         buttons[ind]['text']=plato[pos].repr #f'{label.grid_info()["row"]}{label.grid_info()["column"]}'
         buttons[ind]['foreground']="#ffffff" if plato[pos].clan=="B" else "#000000"
         if pos in to_blick:
+            buttons[ind]["relief"]="sunken"
             buttons[ind]["background"]= hsv(maincoul,1) if (pos[0]+pos[1])%2 else hsv(1-maincoul,1)
         else:
+            buttons[ind]["relief"]="flat"
             buttons[ind]["background"]= hsv(maincoul,.5) if (pos[0]+pos[1])%2 else hsv(1-maincoul,.5)
 def changefor(e):
     if type(e)==tuple:

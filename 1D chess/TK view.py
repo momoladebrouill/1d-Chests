@@ -2,10 +2,7 @@ from main import *
 import tkinter as tk
 
 f=tk.Tk()
-#l=tk.Label(f,text=,font="Consolas 200")
-#l.pack()
-#l["background"]="#ff0000"
-#l.bind('<Button-1>',lambda e: print('grr'))
+f.title("1D chess game by momoladebrouill")
 labels=[tk.Label(f,text=i.repr,font="Consolas 50 bold",width=2) for i in echequier]
 
 for place,label in enumerate(labels):

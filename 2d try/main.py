@@ -1,7 +1,7 @@
-import random,math
-taille_echec=8
+
+
 selected=False
-player=1
+player="B"
 highliters=[]
 
 class Echqier():
@@ -11,11 +11,12 @@ class Echqier():
         self.haut=tailley
         self.total=taillex*tailley
     def __repr__(self):
-        t=""
+        t="+"+"- "*16+"+"
         for i in range(self.total):
             if i%self.larg==0:
-                t+="\n"
+                t+="|\n|"
             t+=str(self.array[i])+" "
+        t+="|\n+--------+"
         return t
     def __getitem__(self,pos):
         x,y=(pos.x,pos.y) if type(pos)==Pos else pos
@@ -43,18 +44,15 @@ class Pos():
     def __init__(self,x,y):
         self.x,self.y=x,y
     def __add__(self,other):
-        if type(other)==type(self):
-            self.x+=other.x
-            self.y+=other.y
-        else:
-            self.x+=other[0]
-            self.y+=other[1]
+        return Pos(self.x+other.x,self.y+other.y) if type(other)==Pos else Pos(self.x+other[0],self.y+other[1])
     def __repr__(self):
         return str(self.x)+str(self.y)
     def __mul__(self,fac):
         return Pos(self.x*fac,self.y*fac)
     def __getitem__(self,num):
         return [self.x,self.y][num]
+    def __eq__(self,other):
+        return self.x==other.x and self.y==other.y
 
 
 class Pion():
@@ -64,15 +62,15 @@ class Pion():
     
     def can_goes(self):
         for i in self.moves:
-            if 0<=self.pos+i<taille_echec:
+            if self.pos+i in plato:
                 yield self.pos+i
     
-    __repr__=lambda self : f"{self.repr} {self.clan} {self.pos}"
+    __repr__=lambda self : f"{self.repr}{self.clan}"
 class Esclave(Pion):
     def __init__(self,clan,pos):
         super().__init__(clan,pos)
         self.repr="♟"
-        self.moves=[(0,-1 if self.clan=="B" else 1)]
+        self.moves=[(0,-1 if self.clan=="N" else 1)]
 
 class Roi(Pion):
     def __init__(self,clan,pos):
@@ -86,6 +84,7 @@ class Tour(Pion):
     def __init__(self,clan,pos):
         super().__init__(clan,pos)
         self.repr="♖"
+        self.pos=pos
     def can_goes(self):
         for der in [(-1,0),(1,0),(0,-1),(0,1)]:
             av=1 # Nombre de jour de croisade
@@ -129,23 +128,24 @@ class Cheval(Pion):
     
         
 class Vide(Pion):
-    def __init__(self,pos):
-        super().__init__(' ',0)
+    def __init__(self):
+        super().__init__(" ",None)
         self.repr=" "
-        self.clan=0
         self.moves=[]
-        self.pos=pos
     #__repr__=lambda self : "_"
 
     
 def on_click(pos):
     global selected, player,highliters
+    #highliters=list(plato[pos].can_goes())
+    tuplepos=pos
+    pos=Pos(tuplepos[0],tuplepos[1])
     if selected:
         if pos in highliters:
-            plato[selected.pos],plato[pos]=Vide(selected.pos),selected
+            plato[selected.pos],plato[pos]=Vide(),selected
             selected.pos=pos
             selected=False
-            player=1 if player==-1 else -1
+            player="B" if player=="N" else "N"
         else:
             selected=False
         highliters=[]
@@ -156,12 +156,13 @@ def on_click(pos):
                 selected=False
         else:
             highliters=list(selected.can_goes())
+    
     return highliters
     
 plato=Echqier()
 for y in range(8):
     for x in range(8):
-        plato[x,y]=Vide(Pos(y,x))
+        plato[x,y]=Vide()
 ordre=[Tour,Cheval,Fou,Reine,Roi,Fou,Cheval,Tour]
 for ind,typ in enumerate(ordre):
     plato[ind,0]=typ("B",Pos(ind,0))
@@ -170,4 +171,3 @@ for ind,typ in enumerate(ordre[::-1]):
     plato[ind,-1]=typ("N",Pos(ind,plato.haut-1))
     plato[ind,-2]=Esclave("N",Pos(ind,plato.haut-2))
 
-#for i in range(-3,3):echequier[i]=ordre[i](int(math.copysign(1,i)),(taille_echec+i)%taille_echec)

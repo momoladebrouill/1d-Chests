@@ -12,8 +12,7 @@ def colorize(to_blick=[]):
         buttons[ind]['text']=plato[pos].repr #f'{label.grid_info()["row"]}{label.grid_info()["column"]}'
         buttons[ind]['foreground']="#ffffff" if plato[pos].clan=="B" else "#000000"
         if pos in to_blick:
-            buttons[ind].flash()
-            buttons[ind]["background"]= hsv(maincoul,1) if (pos[0]+pos[1])%2 else hsv(1-maincoul,1)
+            buttons[ind]["background"]= "#dbdbdb" if (pos[0]+pos[1])%2 else "#dbdbdb"
         else:
             buttons[ind]["background"]= hsv(maincoul,.5) if (pos[0]+pos[1])%2 else hsv(1-maincoul,.5)
 def changefor(e):

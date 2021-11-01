@@ -9,7 +9,7 @@ for place,label in enumerate(labels):
     label.grid(column=place,row=0)
     label.pack_propagate(0)
     label.bind('<Button-1>',lambda e:changefor(e))
-    
+
 def colorize(to_blick=[]):
     for pos,label in enumerate(labels):
         labels[pos]['text']=echequier[pos].repr
@@ -26,4 +26,5 @@ def changefor(e):
 
 colorize()
 
-        
+
+tk.mainloop()

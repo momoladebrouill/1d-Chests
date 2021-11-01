@@ -19,7 +19,7 @@ def colorize(to_blick=[]):
 def changefor(e):
     if type(e)==tuple:
         colorize(on_click(e))
-    
+
 f=tk.Tk()
 f.title('Chess by momoladebrouill')
 buttons=[]
@@ -34,7 +34,7 @@ for pos,piece in plato:
                   height=1,
                   relief='flat',
                   command=partial(changefor, pos)
-                  
+
                   )
     but.grid(row=pos[1],column=pos[0],sticky='NESW')
     buttons.append(but)
@@ -42,5 +42,4 @@ for pos,piece in plato:
 f.bind('<Button-1>',changefor)
 colorize()
 
-
-        
+tk.mainloop()

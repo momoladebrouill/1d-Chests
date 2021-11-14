@@ -38,7 +38,7 @@ class Echqier():
             return divmod(self.it-1,self.larg)[::-1],self.array[self.it-1]
         except IndexError:
             raise StopIteration
-        
+
 
 class Pos():
     def __init__(self,x,y):
@@ -59,7 +59,7 @@ class Pion():
     def __init__(self,clan,pos):
         self.clan=clan
         self.pos=pos
-    
+
     def can_goes(self):
         if self.movetype=="until_meet":
             for der in self.moves:
@@ -77,7 +77,7 @@ class Pion():
                         yield camp
                         av+=1
                         camp=self.pos+Pos(der[0],der[1])*av
-                    
+
         elif self.movetype=="absolute":
             for i in self.moves:
                 if self.pos+i in plato:
@@ -85,7 +85,7 @@ class Pion():
                         yield self.pos+i
         else:
             return []
-    
+
     __repr__=lambda self : f"{self.repr}{self.clan}"
 class Esclave(Pion):
     def __init__(self,clan,pos):
@@ -93,7 +93,25 @@ class Esclave(Pion):
         self.repr="♟"
         self.movetype="absolute"
         self.moves=[(0,-1 if self.clan=="N" else 1)]
-        
+
+    def can_goes(self):
+        for i in self.moves[:]:
+            j1 = (i[0]-1,i[1])
+            j2 = (i[0]+1,i[1])
+            if self.pos+j1 in plato:
+                if plato[self.pos+j1].clan!=self.clan and plato[self.pos+j1].clan != " ":
+                    yield self.pos+j1
+            if self.pos+j2 in plato:
+                if plato[self.pos+j2].clan!=self.clan and plato[self.pos+j2].clan != " ":
+                    yield self.pos+j2
+                    
+        mv = self.moves[:]
+        if self.pos.y==1 and self.clan == "B" or self.pos.y==6 and self.clan == "N":
+            mv.append((mv[0][0]*2,mv[0][1]*2))
+        for i in mv:
+            if self.pos+i in plato:
+                if plato[self.pos+i].clan!=self.clan:
+                    yield self.pos+i
 
 class Roi(Pion):
     def __init__(self,clan,pos):
@@ -104,29 +122,29 @@ class Roi(Pion):
             (-1,-1),(-1,0),(-1,1),(0,-1),
             (0,1),(1,-1),(1,0),(1,1)
             ]
-        
+
 class Tour(Pion):
     def __init__(self,clan,pos):
         super().__init__(clan,pos)
         self.repr="♖"
         self.movetype="until_meet"
         self.moves=[(-1,0),(1,0),(0,-1),(0,1)]
-    
+
 class Fou(Pion):
     def __init__(self,clan,pos):
         super().__init__(clan,pos)
         self.repr="♝"
         self.movetype="until_meet"
         self.moves=[(-1,-1),(1,1),(1,-1),(-1,1)]
-   
+
 class Reine(Pion):
     def __init__(self,clan,pos):
         super().__init__(clan,pos)
         self.repr="♕"
         self.movetype="until_meet"
         self.moves=[(-1,-1),(1,1),(1,-1),(-1,1),(-1,0),(1,0),(0,-1),(0,1)]
-        
-                    
+
+
 class Cheval(Pion):
     def __init__(self,clan,pos):
         super().__init__(clan,pos)
@@ -136,8 +154,8 @@ class Cheval(Pion):
             (2,1),(2,-1),(-2,1),(-2,-1),
             (1,2),(1,-2),(-1,2),(-1,-2)
             ]
-    
-        
+
+
 class Vide(Pion):
     def __init__(self):
         super().__init__(" ",None)
@@ -146,7 +164,7 @@ class Vide(Pion):
         self.moves=[]
     #__repr__=lambda self : "_"
 
-    
+
 def on_click(pos):
     global selected, player,highliters
     #highliters=list(plato[pos].can_goes())
@@ -161,22 +179,22 @@ def on_click(pos):
         else:
             selected=False
         highliters=[]
-                    
+
     else:
         selected=plato[pos]
         if selected.clan!=player:
                 selected=False
         else:
             highliters=list(selected.can_goes())
-    
+
     return highliters
 
-    
+
 plato=Echqier()
 for y in range(8):
     for x in range(8):
         plato[x,y]=Vide()
-        
+
 ordre=[Tour,Cheval,Fou,Reine,Roi,Fou,Cheval,Tour]
 for ind,typ in enumerate(ordre):
     plato[ind,0]=typ("B",Pos(ind,0))
@@ -184,4 +202,3 @@ for ind,typ in enumerate(ordre):
 for ind,typ in enumerate(ordre[::-1]):
     plato[ind,-1]=typ("N",Pos(ind,plato.haut-1))
     plato[ind,-2]=Esclave("N",Pos(ind,plato.haut-2))
-
